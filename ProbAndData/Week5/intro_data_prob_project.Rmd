@@ -1,0 +1,94 @@
+---
+title: "Exploring the BRFSS data"
+output: 
+  html_document: 
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+author: "Robert Muwanga"
+---
+
+The Behavioral Risk Factor Surveillance System (BRFSS) serves as the United States' premier system of health-related telephone surveys that collect state data about U.S. residents regarding their health-related risk behaviors, chronic health conditions, and use of preventive services. BRFSS collects data in all 50 states as well as the District of Columbia and three U.S. territories. BRFSS completes more than 400,000 adult interviews each year, making it the largest continuously conducted health survey system in the world.
+
+This assignment looks to using data from this system to test the students' understanding of basic statistics and probability theory in relation to the Introduction to Probability and Data course offered by Duke University through the Coursera platform. This course leverages on pre-cleaned [data](https://d3c33hcgiwev3.cloudfront.net/_384b2d9eda4b29131fb681b243a7767d_brfss2013.RData?Expires=1567382400&Signature=g2cdbaLay8V5uiR1Z6HSmxaP1D88sB7RigZlOJ73o0t6ylKkNfPR9rA5uo4RfyPa1rDl95nipSPvSRkRuX4al9A6CDhwr2pRfsFBqOaElG70mnZe-jD6Z5~rfQ0FfMndLvhzVUUgqxJc25YGt9FXNu2xBFLaK5bTrWuPBrBsCvk_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A) across 330 variables and 491775 observations. This data is explored in Part 3 of this document and used to answer 3 key inferential questions outlined in Part 2. 
+
+## Setup
+
+### Load packages
+We load the packages that will help with our data analysis. In this case, we mainly focus on two:
+
+* *ggplot2* for data visualization; and
+* *dplyr* for data manipulation.
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+With the assumption that the data is relatively clean, additional packages are not needed to satisfy the requirements of this exercise. 
+
+### Load data
+
+We follow through with loading the cleaned data file. Please note that the expectation is that the Rmarkdown document and the data file are in the same folder.
+
+```{r load-data}
+load("brfss2013.RData")
+```
+
+As a brief summary, we can see that the file consists of:
+
+* ```r ncol(brfss2013)``` number of variables of initial interest.
+* ```r nrow(brfss2013)``` number of observations.
+
+Details on the variables of interest can be viewed at teh codebook located [here](https://d3c33hcgiwev3.cloudfront.net/_e34476fda339107329fc316d1f98e042_brfss_codebook.html?Expires=1567382400&Signature=lbAn~7L1iB2VPDdaCRDf9HQAk4dQYknJrk~UMyjZSWv3clW2sI5~HK~nYQ8w07QeifH3DxVh4U29SBSg3gBnNyJPmxLOY0-XJTJscdub3RiU5vpNjpVpwFEAja5WO2RhDsNrEh5yMyn~nLDwcK8~cIGMFNwN1kNAvOQmV4TWzDg_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A##asthmage).
+
+* * *
+
+## Part 1: Data
+
+From the BRFSS Data User Guide located (here)[https://www.cdc.gov/brfss/data_documentation/pdf/UserguideJune2013.pdf], one can observe that the data collection process involved:
+
+* Collaborating with public health departments of each state to ensure expertise is used to develop the questionnaires.
+
+
+* * *
+
+## Part 2: Research questions
+
+**Research quesion 1:**
+
+**Research quesion 2:**
+
+**Research quesion 3:**
+
+
+* * *
+
+## Part 3: Exploratory data analysis
+
+NOTE: Insert code chunks as needed by clicking on the "Insert a new code chunk" 
+button (green button with orange arrow) above. Make sure that your code is visible
+in the project you submit. Delete this note when before you submit your work.
+
+**Research quesion 1:**
+
+```{r}
+
+```
+
+
+
+**Research quesion 2:**
+
+```{r}
+
+```
+
+
+
+**Research quesion 3:**
+
+```{r}
+
+```
+
