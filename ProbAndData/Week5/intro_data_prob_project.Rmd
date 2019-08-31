@@ -46,7 +46,7 @@ Details on the variables of interest can be viewed at teh codebook located [here
 
 ## Part 1: Data
 
-From the BRFSS Data User Guide located (here)[https://www.cdc.gov/brfss/data_documentation/pdf/UserguideJune2013.pdf], one can observe that the data collection process involved:
+From the BRFSS Data User Guide located [here](https://www.cdc.gov/brfss/data_documentation/pdf/UserguideJune2013.pdf), one can observe that the data collection process involved:
 
 * Collaborating with public health departments of each state to ensure expertise is used to develop the questionnaires.
 
