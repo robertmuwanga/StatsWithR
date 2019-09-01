@@ -23,6 +23,7 @@ We load the packages that will help with our data analysis. In this case, we mai
 ```{r load-packages, message = FALSE}
 library(ggplot2)
 library(dplyr)
+library(forcats)
 ```
 
 With the assumption that the data is relatively clean, additional packages are not needed to satisfy the requirements of this exercise. 
@@ -46,49 +47,114 @@ Details on the variables of interest can be viewed at teh codebook located [here
 
 ## Part 1: Data
 
-From the BRFSS Data User Guide located [here](https://www.cdc.gov/brfss/data_documentation/pdf/UserguideJune2013.pdf), one can observe that the data collection process involved:
+From the BRFSS Data User Guide located [here](https://www.cdc.gov/brfss/data_documentation/pdf/UserguideJune2013.pdf), one can observe that the data collection process involved states obtaining sample phone numbers from the CDC, and work with a statistician to review the data collection methodology and its implementation. Two different sampling techniques are used depending on the nature of the phone number:
 
-* Collaborating with public health departments of each state to ensure expertise is used to develop the questionnaires.
+* **Landline Telephone Numbers** use Disproportionate Stratified Sampling (DSS). Given individuals in a given household can share a phone number, this method helps to minimize bias by grouping ("stratifying") individuals by household and subsequently randomly select eligible adults within each strata.
 
+* **Cellular Telephone Samples** uses Simple Random Sampling with the assumption that each individual has a personal phone number which they do not share. Each individual has an equally likely chance of being selected and individuals that may have moved out-of-state have their feedback moved to the respective state, that is, each state will only maintain information that is relevant to the state at the time of data collection.
+
+Given that the data collection samples from a larger population (national citizenry), generalizability would most likely define the scope of inference for this data set. Sound generalizability requires data on large populations, and quantitative research provides the best foundation for producing broad generalizability.
+
+Furthermore, as this dataset is an observational study rather than experimental (with participants not being randomly assigned to groups), causal relationships cannot be built. At best, only correlations between variables can be shown.
 
 * * *
 
 ## Part 2: Research questions
 
 **Research quesion 1:**
+*Is there a correlation between BMI and Health Care Cover?*
+
+With the change of global diets to more processed foods, it would be interesting to discover whether there is a positive correlation between BMI and health care cover to provide a basis for further research into the influence of co-variants (e.g. weight) and its impact to the healthcare system.
 
 **Research quesion 2:**
+*Does education level influence the number of children within a household?*
+
+The general assumption is that those who possess a higher level of education are more career driven and as such are less likely to have larger families.
 
 **Research quesion 3:**
+*Is there a relationship between fruit and vegetable consumption with BMI?*
 
+The interest would be in assessing whether there is a correlation between fruit and vegetable consumption by BMI, that is, do individuals with lower BMI eat higher proportions of fruit and vegetables?
 
 * * *
 
 ## Part 3: Exploratory data analysis
 
-NOTE: Insert code chunks as needed by clicking on the "Insert a new code chunk" 
-button (green button with orange arrow) above. Make sure that your code is visible
-in the project you submit. Delete this note when before you submit your work.
+**Research quesion 1:** - *Is there a correlation between BMI and Health Care Cover?*
 
-**Research quesion 1:**
+We shall use the two categorical variable *X_bmi5cat* and *hlthpln1* to see whether there is a relationship.
+
+* *X_bmi5cat* : Computed Body Mass Index Categories
+* *hlthpln1* : Have Any Health Care Coverage
+```{r}
+data <- brfss2013 %>% select(X_bmi5cat, hlthpln1, X_state)
+data %>% select(-X_state) %>% table %>% prop.table * 100
+```
+From the matrix, we can see that the percentage of those that invest in coverage increases as the scale moves from underweight to obese.
+Visually representing this relationship: 
 
 ```{r}
+data_q1 <- data %>% 
+  group_by(X_bmi5cat, X_state) %>% 
+  summarize('n' = n())
+
+data_q1$X_bmi5cat <- as.character(data_q1$X_bmi5cat) %>% 
+  sapply(FUN = function(x) if_else(is.na(x), "Unknown", x)) %>% 
+  factor(levels = c('Underweight', 'Normal weight', 'Overweight', 'Obese', 'Unknown'))
+
+data_q1 %>% ggplot(aes(X_bmi5cat, n)) + 
+  geom_boxplot() + 
+  xlab('BMI Category') + 
+  ylab('Count of persons with health coverage')
 
 ```
+The boxplot shows that the median coverage is lowest for those classified as Underweight. On first impression, it could presume that those that are underweight view themselves as healthy and have no need for coverage. But a further assessment will be needed to be done to verify such a causal claim and, as we stated before, causal relationships cannot be established with this dataset.
 
+**Research quesion 2:** - *Does education and income levels influence the number of children within a household?*
 
-
-**Research quesion 2:**
+For this question, we shall assess the relationship between education level - *X_educag*, income levels per household - *income2*, and number of children - *children* - in the dataset. 
 
 ```{r}
-
+data <- brfss2013 %>% select(X_educag, children, income2, X_state)
+data$X_educag <- forcats::fct_explicit_na(data$X_educag)
+data$income2 <- forcats::fct_explicit_na(data$income2)
+data %>% group_by(X_educag) %>% summarize('n' = n())
 ```
+Looking at the number of children per education category, it seems that collectively, those that are graduates from college or technical school have a larger number of children vis-á-vis those that haven't completed graduate school thus invalidating the initial hypothesis.
 
-
-
-**Research quesion 3:**
-
+Let's visualize this:
 ```{r}
-
+data %>% group_by(X_educag, X_state) %>% summarize('n' = n()) %>% 
+  ggplot(aes(X_educag, n)) + geom_boxplot() + coord_flip()
 ```
+With exception of the few outliers, the median number of children are is highest in those that graduated from technical schools and colleges (over 2500 children) compared to those that did not graduate (less than 1200 children).
 
+**Research quesion 3:** - *Is there a relationship between fruit and vegetable consumption with BMI?*
+
+General assumption is that those that consume more fruit and vegetable tend to have a lower BMI score. We can quickly see if such a positive correlation relationship exists and we shall use *X_frutsum*, *X_vegesum* and *X_bmi5* variables.
+
+Let's look at the comparison between fruit consumption and BMI.
+```{r}
+data <- brfss2013 %>% 
+  select(X_frutsum, X_vegesum, X_bmi5) 
+
+data %>% 
+  ggplot(aes(x = X_bmi5, y = X_frutsum)) + 
+  geom_point() + 
+  geom_smooth() + 
+  geom_vline(xintercept = median(data$X_bmi5, na.rm = T), col = 'red') +
+  xlab('BMI Score') + 
+  ylab('Number of Fruits consumed per day')
+```
+From the above graph, we can see that there is almost no correlation between the amount of fruits consumed and the BMI, although those close to the median BMI (the red line) have a number of outliers.
+
+Looking at the relationship between BMI and vegetable consumption, the result is almost the same.
+```{r}
+data %>% 
+  ggplot(aes(x = X_bmi5, y = X_vegesum)) + 
+  geom_point() + 
+  geom_smooth() + 
+  geom_vline(xintercept = median(data$X_bmi5, na.rm = T), col = 'red') +
+  xlab('BMI Score') + 
+  ylab('Number of Vegetables consumed per day')
+```
